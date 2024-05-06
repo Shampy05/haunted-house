@@ -156,6 +156,15 @@ for (let i = 0; i < 50; i++) {
     graves.add(grave)
 }
 
+// ghosts 
+const ghost1 = new THREE.PointLight('#ff00ff', 6, 3)
+scene.add(ghost1)
+
+const ghost2 = new THREE.PointLight('lilac', 6, 3)
+scene.add(ghost2)
+
+const ghost3 = new THREE.PointLight('green', 6, 3)
+scene.add(ghost3)
 
 // Floor
 const floor = new THREE.Mesh(
@@ -252,6 +261,19 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+
+    const ghost1Angle = elapsedTime * 0.5
+    ghost1.position.set(Math.cos(ghost1Angle) * 4, Math.sin(ghost1Angle) * 4, Math.sin(elapsedTime * 3))
+
+    const ghost2Angle = - elapsedTime * 0.32
+    ghost2.position.set(Math.cos(ghost2Angle) * 5, Math.sin(ghost2Angle) * 5, Math.sin(elapsedTime * 4) + Math.sin(elapsedTime * 2.5))
+
+    const ghost3Angle = - elapsedTime * 0.18
+    ghost3.position.set(
+        Math.cos(ghost3Angle) * (7 + Math.sin(elapsedTime * 0.32)),
+        Math.sin(ghost3Angle) * (7 + Math.sin(elapsedTime * 0.5)),
+        Math.sin(elapsedTime * 4) + Math.sin(elapsedTime * 2.5)
+    )
 
     // Update controls
     controls.update()
