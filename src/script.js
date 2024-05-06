@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { TrackballControls } from 'three/addons/controls/TrackballControls.js'
 import GUI from 'lil-gui'
 import { randFloat } from 'three/src/math/MathUtils'
 
@@ -14,10 +15,6 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
-
-// helper 
-const axesHelper = new THREE.AxesHelper(10)
-scene.add(axesHelper)
 
 /**
  * Textures
@@ -44,6 +41,11 @@ grassColorTexture.colorSpace = THREE.SRGBColorSpace
 const grassAmbientOcclusionTexture = textureLoader.load('/textures/grass/ambientOcclusion.jpg')
 const grassNormalTexture = textureLoader.load('/textures/grass/normal.jpg')
 const grassRoughnessTexture = textureLoader.load('/textures/grass/roughness.jpg')
+
+const groundColorTexture = textureLoader.load('/textures/ground/MetalCastRusted001_COL_1K.png')
+groundColorTexture.colorSpace = THREE.SRGBColorSpace
+const groundNormalTexture = textureLoader.load('/textures/ground/MetalCastRusted001_NRM_1K.png')
+
 
 grassColorTexture.repeat.set(8, 8)
 grassAmbientOcclusionTexture.repeat.set(8, 8)
@@ -140,7 +142,7 @@ scene.add(graves)
 const graveGeomtery = new THREE.BoxGeometry(0.6, 0.8, 0.2)
 const graveMaterial = new THREE.MeshStandardMaterial({ color: '#b2b6b1' })
 
-for (let i = 0; i < 50; i++) {
+for (let i = 0; i < 20; i++) {
     const angle = Math.random() * Math.PI * 2
     const radius = 3 + Math.random() * 6
     const x = Math.cos(angle) * radius 
@@ -161,7 +163,7 @@ for (let i = 0; i < 50; i++) {
 const ghost1 = new THREE.PointLight('#ff00ff', 6, 3)
 scene.add(ghost1)
 
-const ghost2 = new THREE.PointLight('lilac', 6, 3)
+const ghost2 = new THREE.PointLight('orange', 6, 3)
 scene.add(ghost2)
 
 const ghost3 = new THREE.PointLight('green', 6, 3)
@@ -171,10 +173,8 @@ scene.add(ghost3)
 const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(20, 20),
     new THREE.MeshStandardMaterial({
-        map: grassColorTexture,
-        aoMap: grassAmbientOcclusionTexture,
-        normalMap: grassNormalTexture,
-        roughnessMap: grassRoughnessTexture
+        map: groundColorTexture,
+        normalMap: groundNormalTexture
     })
 )
 floor.rotation.x = - Math.PI * 0.5
@@ -244,6 +244,9 @@ scene.add(camera)
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
+controls.enablePan = false
+controls.maxPolarAngle = Math.PI / 2 - 0.1
+
 
 /**
  * Renderer
@@ -257,7 +260,7 @@ renderer.setClearColor('#262837')
 
 // shadows
 renderer.shadowMap.enabled = true
-renderer,shadowMap.type = THREE.PCFSoftShadowMap
+renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
 moonLight.castShadow = true 
 doorLight.castShadow = true
